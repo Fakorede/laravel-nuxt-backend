@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use Illuminate\Http\Request;
+
+use App\User;
+
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Resources\User as UserResource;
+
+// use JWTAuth;
+// use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
@@ -15,25 +20,29 @@ class AuthController extends Controller
         $user = User::create([
             'email' => $request->email,
             'name' => $request->name,
-            'password' => bcrypt($request->passsword)
+            'password' => bcrypt($request->password),
         ]);
 
-        if(!$token = auth()->attempt($request->only(['email', 'password']))) {
-            return abort(401);
+        $credentials = $request->only(['email', 'password']);
+
+        if(! $token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
-        
+
         return (new UserResource($request->user()))->additional([
             'meta' => [
                 'token' => $token
-            ]
+            ],
         ]);
     }
 
     public function login(UserLoginRequest $request) {
-        if(!$token = auth()->attempt($request->only(['email', 'password']))) {
+        $credentials = $request->only(['email', 'password']);
+
+        if(!$token = auth()->attempt($credentials)) {
             return response()->json([
                 'errors' => [
-                    'email' => ['Email address incorrect!']
+                    'email' => ['Email or Password is incorrect!']
                 ]
             ], 422);
         }
