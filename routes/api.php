@@ -7,3 +7,8 @@ Route::post('/logout', 'AuthController@logout');
 // User endpoint
 Route::get('/user', 'AuthController@user');
 
+// Topics routes
+Route::group(['prefix' => 'topics'], function() {
+    Route::post('/', 'TopicController@store')->middleware('auth:api');
+});
+
