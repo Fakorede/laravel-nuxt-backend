@@ -29,4 +29,8 @@ class TopicController extends Controller
         $topics = Topic::latestFirst()->paginate(5);
         return TopicResource::collection($topics);
     }
+
+    public function show(Topic $topic) {
+        return new TopicResource($topic);
+    }
 }
