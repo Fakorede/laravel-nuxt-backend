@@ -18,6 +18,11 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
+    // used in TopicPolicy
+    public function ownsTopic(Topic $topic) {
+        return $this->id === $topic->user->id;
+    }
+
     public function getJWTIdentifier() {
         // return the primary key of the user
         return $this->getKey();
