@@ -18,6 +18,7 @@ Route::group(['prefix' => 'topics'], function() {
     // Post routes group
     Route::group(['prefix' => '/{topic}/posts'], function() {
         Route::post('/', 'PostController@store')->middleware('auth:api');
+        Route::patch('/{post}', 'PostController@update')->middleware('auth:api');
     });
 });
 
