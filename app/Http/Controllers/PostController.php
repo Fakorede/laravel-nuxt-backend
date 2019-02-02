@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\Post as PostResource;
 // use Illuminate\Http\Request;
 use App\Post;
@@ -18,5 +19,18 @@ class PostController extends Controller
         // save post to topic
         $topic->posts()->save($post);
         return new PostResource($post);
+    }
+
+    public function update(UpdatePostRequest $request, Topic $topic, Post $post) {
+        $this->authorize('update', $post);
+        $post->body = $request->get('body', $post->body);
+        $post->save();
+        return new PostResource($post);
+    }
+
+    public function destroy(Topic $topic, Post $post) {
+        $this->authorize('destroy', $post);
+        $post->delete();
+        return response(null, 204);
     }
 }
