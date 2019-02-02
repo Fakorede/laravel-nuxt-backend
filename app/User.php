@@ -23,6 +23,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->id === $topic->user->id;
     }
 
+    // used in PostPolicy
+    public function ownsPost(Post $post) {
+        return $this->id === $post->user->id;
+    }
+
     public function getJWTIdentifier() {
         // return the primary key of the user
         return $this->getKey();
